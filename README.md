@@ -1,1 +1,1 @@
-# movies-explorer-api
+api.movies-diplom.nomoredomainsrocks.ru
