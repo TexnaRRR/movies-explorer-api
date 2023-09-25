@@ -6,7 +6,6 @@ const Error401 = require('../errors/401');
 const Error404 = require('../errors/404');
 const Error409 = require('../errors/409');
 const JWT_DEV = require('../utils/jwtDev');
-const errors = require('../lang/ru/errors');
 
 const { NODE_ENV } = process.env;
 const JWT_KEY = process.env.JWT_SECRET;
@@ -15,7 +14,7 @@ const getAboutMe = async (req, res, next) => {
   try {
     const user = await User.findById(req.user._id);
     if (!user) {
-      throw new Error404(errors.userNotFound);
+      throw new Error404('Пользователь не найден');
     }
     res.send(user);
   } catch (err) {
@@ -32,13 +31,13 @@ const updateUser = async (req, res, next) => {
       { new: true, runValidators: true },
     );
     if (!user) {
-      throw new Error404(errors.userNotUpdated);
+      throw new Error404('Пользователь не обновлен');
     } else {
       res.send(user);
     }
   } catch (err) {
     if (err.name === 'ValidationError') {
-      next(new Error400(errors.incorrectData));
+      next(new Error400('Некоррекные данные'));
     } else {
       next(err);
     }
@@ -64,11 +63,11 @@ const createUser = async (req, res, next) => {
     });
   } catch (err) {
     if (err.code === 11000) {
-      const conflict = new Error409(errors.emailExists);
+      const conflict = new Error409('Email уже существует');
       next(conflict);
     }
     if (err.name === 'ValidationError') {
-      next(new Error400(errors.incorrectData));
+      next(new Error400('Некоррекные данные'));
     } else {
       next(err);
     }
@@ -80,7 +79,7 @@ const login = async (req, res, next) => {
     const { email, password } = req.body;
     const user = await User.findOne({ email }).select('+password');
     if (!user || !bcrypt.compareSync(password, user.password)) {
-      throw new Error401(errors.incorrectEmailPassword);
+      throw new Error401('Неверные почта или пароль');
     }
 
     const token = jwt.sign(
