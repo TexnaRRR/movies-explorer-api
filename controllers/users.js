@@ -6,6 +6,7 @@ const Error401 = require('../errors/401');
 const Error404 = require('../errors/404');
 const Error409 = require('../errors/409');
 const JWT_DEV = require('../utils/jwtDev');
+const errors = require('../lang/ru/errors');
 
 const { NODE_ENV } = process.env;
 const JWT_KEY = process.env.JWT_SECRET;
@@ -14,7 +15,7 @@ const getAboutMe = async (req, res, next) => {
   try {
     const user = await User.findById(req.user._id);
     if (!user) {
-      throw new Error404('Пользователь не найден');
+      throw new Error404(errors.userNotFound);
     }
     res.send(user);
   } catch (err) {
@@ -31,13 +32,13 @@ const updateUser = async (req, res, next) => {
       { new: true, runValidators: true },
     );
     if (!user) {
-      throw new Error404('Пользователь не обновлен');
+      throw new Error404(errors.userNotUpdated);
     } else {
       res.send(user);
     }
   } catch (err) {
     if (err.name === 'ValidationError') {
-      next(new Error400('Некоррекные данные'));
+      next(new Error400(errors.incorrectData));
     } else {
       next(err);
     }
@@ -63,11 +64,11 @@ const createUser = async (req, res, next) => {
     });
   } catch (err) {
     if (err.code === 11000) {
-      const conflict = new Error409('Email уже существует');
+      const conflict = new Error409(errors.emailExists);
       next(conflict);
     }
     if (err.name === 'ValidationError') {
-      next(new Error400('Некоррекные данные'));
+      next(new Error400(errors.incorrectData));
     } else {
       next(err);
     }
@@ -79,7 +80,7 @@ const login = async (req, res, next) => {
     const { email, password } = req.body;
     const user = await User.findOne({ email }).select('+password');
     if (!user || !bcrypt.compareSync(password, user.password)) {
-      throw new Error401('Неверные почта или пароль');
+      throw new Error401(errors.incorrectEmailPassword);
     }
 
     const token = jwt.sign(
@@ -92,7 +93,7 @@ const login = async (req, res, next) => {
       httpOnly: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
-    res.send({ message: 'Успех успешный' });
+    res.send({ message: errors.success });
   } catch (err) {
     next(err);
   }
@@ -100,7 +101,7 @@ const login = async (req, res, next) => {
 
 const logout = async (req, res, next) => {
   try {
-    res.clearCookie('jwt').send({ message: 'Вы успешно вышли из аккаунта' });
+    res.clearCookie('jwt').send({ message: errors.successfullyLogout });
   } catch (err) {
     next(err);
   }

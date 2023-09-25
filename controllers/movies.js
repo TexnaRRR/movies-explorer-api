@@ -2,6 +2,7 @@ const Movie = require("../models/movie");
 const Error404 = require("../errors/404");
 const Error403 = require("../errors/403");
 const Error400 = require("../errors/400");
+const errors = require('../lang/ru/errors');
 
 const getMovies = async (req, res, next) => {
   const owner = req.user._id;
@@ -24,13 +25,13 @@ const createMovie = async (req, res, next) => {
     });
 
     if (!movie) {
-      throw new Error404("Фильм не создан");
+      throw new Error404(errors.movieNotCreated);
     } else {
       res.status(201).send(movie);
     }
   } catch (err) {
     if (err.name === 'ValidationError') {
-      next(new Error400('Некоррекные данные'));
+      next(new Error400(errors.incorrectData));
     } else {}
     console.log(err)
     next(err);
@@ -44,16 +45,16 @@ const deleteMovie = async (req, res, next) => {
     console.log(id)
     const movie = await Movie.findById(id);
     if (!movie) {
-      throw new Error404("Фильм не найден");
+      throw new Error404(errors.movieNotFound);
     }
 
     if (movie.owner.toString() !== userId) {
-      throw new Error403("Нет прав на удаление фильма");
+      throw new Error403(errors.noDeleteMovie);
     }
 
     await Movie.findByIdAndRemove(movie._id);
 
-    res.send({ message: "Фильм удален" });
+    res.send({ message: errors.movieRemoved });
   } catch (err) {
     next(err);
   }
