@@ -10,11 +10,8 @@ const errors = {
   movieNotCreated: 'Фильм не создан',
   movieNotFound: 'Фильм не найден',
   noDeleteMovie: 'Нет прав на удаление фильма',
-  movieRemoved: 'Фильм удален',
   incorrectAddress: 'Укажите адрес',
   insertImage: 'Вставьте ссылку на изображение',
-  incorrectEmail: 'Неверный email',
-  addressNotExist: 'Несуществующий адрес'
 };
 
 module.exports = {

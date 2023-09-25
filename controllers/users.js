@@ -93,7 +93,7 @@ const login = async (req, res, next) => {
       httpOnly: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
-    res.send({ message: errors.success });
+    res.send({ message: 'Успех успешный' });
   } catch (err) {
     next(err);
   }
@@ -101,7 +101,7 @@ const login = async (req, res, next) => {
 
 const logout = async (req, res, next) => {
   try {
-    res.clearCookie('jwt').send({ message: errors.successfullyLogout });
+    res.clearCookie('jwt').send({ message: 'Вы успешно вышли из аккаунта' });
   } catch (err) {
     next(err);
   }

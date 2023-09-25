@@ -54,7 +54,7 @@ const deleteMovie = async (req, res, next) => {
 
     await Movie.findByIdAndRemove(movie._id);
 
-    res.send({ message: errors.movieRemoved });
+    res.send({ message: "Фильм удален" });
   } catch (err) {
     next(err);
   }
