@@ -4,8 +4,9 @@ const Error403 = require("../errors/403");
 const Error400 = require("../errors/400");
 
 const getMovies = async (req, res, next) => {
+  const owner = req.user._id;
   try {
-    const movies = await Movie.find({});
+    const movies = await Movie.find({owner});
     res.send(movies);
   } catch (err) {
     next(err);
