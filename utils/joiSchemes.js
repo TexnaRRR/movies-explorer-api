@@ -155,6 +155,12 @@ const userUpdateValidation = {
       'string.max': 'Максимальная длина поля "name" - 30',
       'any.required': 'Поле "name" должно быть заполнено',
     }),
+    email: Joi.string().email().required().messages({
+      'string.base': 'Поле "email" должно быть строкой',
+      'string.empty': 'Поле "email" должно быть заполнено',
+      'string.email': 'Некорректный Email',
+      'any.required': 'Поле "email" должно быть заполнено',
+    }),
   }),
 };
 
