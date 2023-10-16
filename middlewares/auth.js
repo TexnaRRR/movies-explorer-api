@@ -15,6 +15,7 @@ const middlewareAuth = (req, res, next) => {
     next();
   } catch {
     const badToken = new Error401('Токен недействителен');
+    res.clearCookie('jwt');
     next(badToken);
   }
 };
